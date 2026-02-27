@@ -1,18 +1,91 @@
-# Statisitcal Arbitrage on Real Market Data:
-By: Chabod M.
+# Statistical Arbitrage on Real Market Data  
+Author: Chabod M.
 
-## Trading Strategy Development Steps
-1. In-Sample Excellence
-2. In-Sample Permutation Test
-3. Walk Forward Test
-5. Walk Forward Permutation Test
+## Overview
 
-My thought process of how I access a trading strategy: 
+This project implements and evaluates systematic trading strategies using real market data. The focus is not the strategy itself, but the statistical validation framework used to assess robustness and significance.
 
-I will use a moving average cross over as an example. I load in candle stick data, and compute a fast and slow moving average (FMA & SMA, respectively). At each bar we visually check to see if the FMA is above the SMA. I created a signal that denotes the strategy at each bar, 1 implicitly means we have a long position following that bar, and 0 represents no position. 
+---
 
-If we compute close to close returns, and shift them forward by one bar, we can mulitply the postion signal by the shifted return to get a return for each bar attributable to the strategy. 
+## Trading Strategy Development Framework
 
-The strategy returns at the same granularities of the bars are used to compute objective functions such as the profit factor or the sharp ratio. By having a return for each bar instead of each trade objective functions pass more data and the calculations and results are more stable. 
+1. In-Sample Optimization  
+2. In-Sample Permutation Testing  
+3. Walk-Forward Validation  
+4. Walk-Forward Permutation Testing  
 
-Higher granularities are Superior!
+This layered validation structure reduces overfitting and enforces statistical discipline.
+
+---
+
+## Strategy Evaluation Methodology
+
+To illustrate the process, consider a simple moving average crossover strategy.
+
+### Signal Construction
+
+- Compute a Fast Moving Average (FMA)  
+- Compute a Slow Moving Average (SMA)  
+
+Signal logic:
+
+- If FMA > SMA, hold a long position  
+- Otherwise remain flat  
+
+The signal represents the position taken after the bar closes.
+
+---
+
+## Return Attribution
+
+Close-to-close return:
+
+r_t = (P_t − P_{t−1}) / P_{t−1}
+
+Strategy return:
+
+R_t = Signal_{t−1} × r_t
+
+Returns are shifted forward one bar to eliminate look-ahead bias.  
+This ensures returns are attributed only to positions that were actually held.
+
+---
+
+## Objective Functions
+
+Using bar-level strategy returns, compute:
+
+- Sharpe Ratio  
+- Profit Factor  
+- Maximum Drawdown  
+- Sortino Ratio  
+- Calmar Ratio  
+
+Computing returns at bar granularity increases sample size and improves estimator stability, provided transaction costs and slippage are properly modeled.
+
+---
+
+## Statistical Robustness
+
+To avoid false discovery:
+
+- Apply permutation tests to the signal sequence  
+- Validate parameters using walk-forward testing  
+- Require consistent out-of-sample performance  
+
+Only strategies that survive all validation layers are considered viable.
+
+---
+
+## Core Philosophy
+
+A trading strategy is not validated by profitability alone.
+
+It must demonstrate:
+
+- Statistical significance  
+- Parameter stability  
+- Out-of-sample persistence  
+- Robust risk-adjusted performance  
+
+Granularity improves estimator reliability when noise and execution costs are properly controlled.
